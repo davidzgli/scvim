@@ -1,0 +1,32 @@
+# Vim plugin directories
+autoload/
+plugged/
+
+# Vim temporary files
+*.swp
+*.swo
+*.tmp
+
+# Vim history and cache
+.netrwhist
+.viminfo
+
+# Tags files
+tags
+.tags
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
