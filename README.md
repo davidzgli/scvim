@@ -34,6 +34,8 @@ This configuration includes the following essential settings:
 - **Tab settings**: 4-space tabs, spaces instead of tabs, smart indentation
 - **Extended history**: remembers 1000 commands and search patterns
 - **Filetype detection** with automatic indentation
+- **Leader key**: spacebar for easy access to custom commands
+- **Quick mode switching**: `jj` to exit insert mode
 
 ## 🔌 Installed Plugins
 
@@ -65,22 +67,22 @@ A retro groove color scheme with warm colors and excellent contrast. Perfect for
 Lightning-fast navigation with just a few keystrokes. EasyMotion highlights all possible destinations and allows you to jump directly to any location.
 
 **Basic Usage**:
-- `<Leader><Leader>w` - Jump to any word
-- `<Leader><Leader>f{char}` - Jump to any character
-- `<Leader><Leader>s{char}` - Bidirectional search for character
-- `<Leader><Leader>j` - Jump to any line below
-- `<Leader><Leader>k` - Jump to any line above
+- `<space><space>w` - Jump to any word
+- `<space><space>f{char}` - Jump to any character
+- `<space><space>s{char}` - Bidirectional search for character
+- `<space><space>j` - Jump to any line below
+- `<space><space>k` - Jump to any line above
 
 **Examples**:
 ```vim
 " Jump to the word 'function'
-<Leader><Leader>wf  " Then press the highlighted letter
+<space><space>wf  " Then press the highlighted letter
 
 " Find all occurrences of 'a'
-<Leader><Leader>fa  " Then press the highlighted letter to jump
+<space><space>fa  " Then press the highlighted letter to jump
 
 " Search for 'th' in both directions
-<Leader><Leader>sth  " Then press the highlighted letter
+<space><space>sth  " Then press the highlighted letter
 ```
 
 **Command Mode**:
@@ -88,8 +90,8 @@ Lightning-fast navigation with just a few keystrokes. EasyMotion highlights all 
 " Enable smartcase (match 'v' and 'V' when typing 'v')
 let g:EasyMotion_smartcase = 1
 
-" Change the default leader from <Leader><Leader> to <Leader>
-map <Leader> <Plug>(easymotion-prefix)
+" Change the default leader from <space><space> to <space>
+map <space> <Plug>(easymotion-prefix)
 ```
 
 #### 👟 Sneak
@@ -184,6 +186,68 @@ Automatically adds closing brackets, parentheses, quotes, and other delimiters a
 
 ---
 
+### Terminal & Session Management
+
+#### 🖥️ Vimux
+**Repository**: [preservim/vimux](https://github.com/preservim/vimux)
+
+Seamlessly interact with tmux from vim. Perfect for system administrators who need to run commands without losing focus in their editor.
+
+**Features**:
+- Creates a 20% tall horizontal tmux pane for command execution
+- Runs commands without losing vim focus
+- Easy re-running of previous commands
+- Ideal for testing scripts, running builds, or monitoring logs
+
+**Basic Usage**:
+- `:VimuxRunCommand "command"` - Run any shell command in tmux pane
+- `:VimuxRunLastCommand` - Re-execute the most recent command
+- `:VimuxCloseRunner` - Close the tmux runner pane
+- `:VimuxInspectRunner` - Move cursor to tmux runner pane
+
+**Key Mappings** (using spacebar as leader):
+- `<space>vl` - Run current line in tmux pane
+- `[count]<space>vj` - Run current line + count lines below (default: 3)
+- `[count]<space>vk` - Run current line + count lines above (default: 3)
+- `[count]<space>va` - Run current line + count lines above and below (default: 3)
+- `<space>vp` - Run current paragraph (blank line separated)
+- `<space>vv` - Run visual selection (visual mode)
+- `<space>vr` - Re-run last command
+- `<space>vc` - Close tmux runner pane
+- `<space>vi` - Inspect tmux runner pane
+
+**Examples**:
+```vim
+" Run a system command
+:VimuxRunCommand "systemctl status nginx"
+
+" Monitor log files
+:VimuxRunCommand "tail -f /var/log/syslog"
+
+" Run a script and keep it visible
+:VimuxRunCommand "./deploy.sh"
+
+" Re-run the last command
+:VimuxRunLastCommand
+
+" Interactive usage examples:
+" 1. Place cursor on 'ls -la' and press <space>vl
+" 2. Select multiple commands and press <space>vv
+" 3. Use 4<space>vj to run current line + 4 below
+" 4. Use 2<space>va to run current line + 2 above and below
+" 5. Use <space>vp to run entire script block
+```
+
+**Useful for System Administrators**:
+- Running diagnostic commands while editing configs
+- Monitoring services during configuration changes
+- Testing scripts without leaving the editor
+- Quick access to system logs and status
+
+**Requirements**: Requires tmux to be installed and running.
+
+---
+
 ### Status & Interface
 
 #### ✈️ Airline
@@ -209,7 +273,7 @@ Theme collection for vim-airline. The theme automatically matches your color sch
 
 1. **Fast Navigation**:
    ```vim
-   <Leader><Leader>w    " Jump to any word
+   <space><space>w      " Jump to any word
    sth                  " Jump to next 'th'
    ```
 
@@ -219,7 +283,15 @@ Theme collection for vim-airline. The theme automatically matches your color sch
    gcap                 " Comment/uncomment paragraph
    ```
 
-3. **Efficient Editing**:
+3. **Terminal Integration**:
+   ```vim
+   <space>vl            " Run current line in tmux
+   4<space>vj           " Run current + 4 lines below
+   <space>vp            " Run current paragraph in tmux
+   <space>vr            " Re-run last command
+   ```
+
+4. **Efficient Editing**:
    ```vim
    ci"                  " Change inside quotes
    di(                  " Delete inside parentheses
@@ -230,18 +302,23 @@ Theme collection for vim-airline. The theme automatically matches your color sch
 - Use relative line numbers: `5j` jumps down 5 lines, `3k` jumps up 3 lines
 - Combine motions: `d2w` deletes 2 words, `c3j` changes 3 lines down
 - Use EasyMotion for long jumps, Sneak for short precise movements
-- Remember that `<Leader>` is typically `\` (backslash)
+- `<Leader>` is set to spacebar for easy access
 
 ## 🔧 Customization
 
-### Changing the Leader Key
+### Leader Key Configuration
 
-By default, `<Leader>` is `\`. You can change it by adding this to the top of your vimrc:
+The leader key is set to spacebar for easy access. This configuration is already included in the vimrc:
+
+```vim
+let mapleader = " "  " Spacebar as leader key
+```
+
+You can change it to other keys if preferred:
 
 ```vim
 let mapleader = ","  " Use comma as leader
-" or
-let mapleader = " "  " Use space as leader
+let mapleader = ";"  " Use semicolon as leader
 ```
 
 ### Plugin-specific Configurations
@@ -250,13 +327,16 @@ Add these to your vimrc for enhanced functionality:
 
 ```vim
 " EasyMotion: Use single leader instead of double
-map <Leader> <Plug>(easymotion-prefix)
+map <space> <Plug>(easymotion-prefix)
 
 " Sneak: Enable label mode
 let g:sneak#label = 1
 
 " EasyMotion: Enable smartcase
 let g:EasyMotion_smartcase = 1
+
+" Additional key mappings
+inoremap jk <Esc>    " Alternative to jj for exiting insert mode
 ```
 
 ## 📋 Plugin Management

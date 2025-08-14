@@ -21,6 +21,9 @@ set termguicolors    " Enable 24-bit RGB color
 " =============================================================================
 " 2. EDITOR BEHAVIOR
 " =============================================================================
+" Set spacebar as leader key
+let mapleader = " "
+
 set history=1000     " Remember more commands and search history
 set mouse=a          " Enable mouse support in all modes
 filetype plugin indent on " Load filetype-specific indentations and plugins
@@ -38,6 +41,8 @@ set shiftwidth=4     " Number of spaces for indentation
 set expandtab        " Use spaces instead of tabs
 set autoindent       " Copy indent from current line when starting a new one
 "
+" Key Mappings
+inoremap jj <Esc>    " Use jj to exit insert mode
 "
 
 " =============================================================================
@@ -81,6 +86,9 @@ Plug 'Raimondi/delimitMate'
 " Easy commenting and uncommenting with gcc, gc, etc.
 Plug 'tpope/vim-commentary'
 
+" For seamless tmux integration from vim
+Plug 'preservim/vimux'
+
 " Initialize the plugin system
 call plug#end()
 "
@@ -100,4 +108,64 @@ colorscheme gruvbox
 " To quickly switch between schemes, you can use:
 " :colorscheme onedark
 " :colorscheme gruvbox
+"
+
+" =============================================================================
+" 6. VIMUX HELPER FUNCTIONS
+" =============================================================================
+" Run current line in tmux pane
+function! VimuxRunCurrentLine()
+  let current_line = getline('.')
+  call VimuxRunCommand(current_line)
+endfunction
+
+" Run current line + N lines below
+function! VimuxRunLinesBelow(count)
+  let lines = getline('.', line('.') + a:count)
+  let command = join(lines, "\n")
+  call VimuxRunCommand(command)
+endfunction
+
+" Run current line + N lines above
+function! VimuxRunLinesAbove(count)
+  let lines = getline(line('.') - a:count, '.')
+  let command = join(lines, "\n")
+  call VimuxRunCommand(command)
+endfunction
+
+" Run current line + N lines above and below
+function! VimuxRunLinesAround(count)
+  let lines = getline(line('.') - a:count, line('.') + a:count)
+  let command = join(lines, "\n")
+  call VimuxRunCommand(command)
+endfunction
+
+" Run visual selection in tmux pane
+function! VimuxRunSelection()
+  let lines = getline("'<", "'>")
+  let command = join(lines, "\n")
+  call VimuxRunCommand(command)
+endfunction
+
+" =============================================================================
+" 7. VIMUX KEY MAPPINGS
+" =============================================================================
+" Single line execution
+nnoremap <Leader>vl :call VimuxRunCurrentLine()<CR>
+
+" Multi-line execution (current + neighbors) - accepts count prefix
+nnoremap <Leader>vj :<C-u>call VimuxRunLinesBelow(v:count1 == 1 ? 3 : v:count1)<CR>
+nnoremap <Leader>vk :<C-u>call VimuxRunLinesAbove(v:count1 == 1 ? 3 : v:count1)<CR>
+nnoremap <Leader>va :<C-u>call VimuxRunLinesAround(v:count1 == 1 ? 3 : v:count1)<CR>
+
+" Paragraph execution (blank line separated)
+nnoremap <Leader>vp vip:call VimuxRunSelection()<CR>
+
+" Visual selection execution
+vnoremap <Leader>vv :call VimuxRunSelection()<CR>
+
+" Quick Vimux commands
+nnoremap <Leader>vr :VimuxRunLastCommand<CR>
+nnoremap <Leader>vc :VimuxCloseRunner<CR>
+nnoremap <Leader>vi :VimuxInspectRunner<CR>
 "
