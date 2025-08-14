@@ -205,16 +205,17 @@ Seamlessly interact with tmux from vim. Perfect for system administrators who ne
 - `:VimuxCloseRunner` - Close the tmux runner pane
 - `:VimuxInspectRunner` - Move cursor to tmux runner pane
 
-**Key Mappings** (using spacebar as leader):
-- `<space>vl` - Run current line in tmux pane
-- `[count]<space>vj` - Run current line + count lines below (default: 3)
-- `[count]<space>vk` - Run current line + count lines above (default: 3)
-- `[count]<space>va` - Run current line + count lines above and below (default: 3)
-- `<space>vp` - Run current paragraph (blank line separated)
-- `<space>vv` - Run visual selection (visual mode)
-- `<space>vr` - Re-run last command
-- `<space>vc` - Close tmux runner pane
-- `<space>vi` - Inspect tmux runner pane
+**Key Mappings** (using double spacebar as leader):
+- `<space><space>vl` - Run current line in tmux pane
+- `<space><space>v{motion}` - Run text using motion (operator-pending mode)
+- `[count]<space><space>vj` - Run current line + count lines below (default: 3)
+- `[count]<space><space>vk` - Run current line + count lines above (default: 3)
+- `[count]<space><space>va` - Run current line + count lines above and below (default: 3)
+- `<space><space>vp` - Run current paragraph (blank line separated)
+- `<space><space>vv` - Run visual selection (visual mode)
+- `<space><space>vr` - Re-run last command
+- `<space><space>vc` - Close tmux runner pane
+- `<space><space>vi` - Inspect tmux runner pane
 
 **Examples**:
 ```vim
@@ -230,19 +231,47 @@ Seamlessly interact with tmux from vim. Perfect for system administrators who ne
 " Re-run the last command
 :VimuxRunLastCommand
 
+" Operator-pending mode examples:
+" Run current line + 5 lines below
+<space><space>v5j
+
+" Run around paragraph  
+<space><space>vap
+
+" Run inside braces/function
+<space><space>vi}
+
+" Run from cursor to end of line
+<space><space>v$
+
+" Run inside quotes
+<space><space>vi"
+
 " Interactive usage examples:
-" 1. Place cursor on 'ls -la' and press <space>vl
-" 2. Select multiple commands and press <space>vv
-" 3. Use 4<space>vj to run current line + 4 below
-" 4. Use 2<space>va to run current line + 2 above and below
-" 5. Use <space>vp to run entire script block
+" 1. Place cursor on 'ls -la' and press <space><space>vl
+" 2. Select multiple commands and press <space><space>vv
+" 3. Use <space><space>v4j to run current line + 4 below (operator mode)
+" 4. Use 4<space><space>vj to run current line + 4 below (count prefix)
+" 5. Use <space><space>vap to run around paragraph (operator mode)
+" 6. Use <space><space>vp to run entire script block
 ```
+
+**Operator-Pending Mode**:
+The `<space><space>v` mapping enters operator-pending mode, allowing you to use any vim motion:
+- `<space><space>v4j` - Run current + 4 lines below
+- `<space><space>v2k` - Run current + 2 lines above  
+- `<space><space>vap` - Run around paragraph
+- `<space><space>vi}` - Run inside braces
+- `<space><space>v$` - Run from cursor to end of line
+- `<space><space>viw` - Run inner word
+- `<space><space>v3}` - Run to third closing brace
 
 **Useful for System Administrators**:
 - Running diagnostic commands while editing configs
 - Monitoring services during configuration changes
 - Testing scripts without leaving the editor
 - Quick access to system logs and status
+- Flexible text selection with vim motions
 
 **Requirements**: Requires tmux to be installed and running.
 
@@ -285,10 +314,10 @@ Theme collection for vim-airline. The theme automatically matches your color sch
 
 3. **Terminal Integration**:
    ```vim
-   <space>vl            " Run current line in tmux
-   4<space>vj           " Run current + 4 lines below
-   <space>vp            " Run current paragraph in tmux
-   <space>vr            " Re-run last command
+   <space><space>vl     " Run current line in tmux
+   <space><space>v4j    " Run current + 4 lines below (operator mode)
+   <space><space>vp     " Run current paragraph in tmux
+   <space><space>vr     " Re-run last command
    ```
 
 4. **Efficient Editing**:
@@ -326,17 +355,18 @@ let mapleader = ";"  " Use semicolon as leader
 Add these to your vimrc for enhanced functionality:
 
 ```vim
-" EasyMotion: Use single leader instead of double
-map <space> <Plug>(easymotion-prefix)
+" EasyMotion: Enable smartcase
+let g:EasyMotion_smartcase = 1
 
 " Sneak: Enable label mode
 let g:sneak#label = 1
 
-" EasyMotion: Enable smartcase
-let g:EasyMotion_smartcase = 1
-
 " Additional key mappings
 inoremap jk <Esc>    " Alternative to jj for exiting insert mode
+
+" Note: EasyMotion uses <space><space> by default, which works well
+" with our Vimux double-leader setup. Don't change the EasyMotion prefix
+" to avoid conflicts with Vimux commands.
 ```
 
 ## 📋 Plugin Management

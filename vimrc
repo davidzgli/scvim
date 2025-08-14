@@ -147,25 +147,49 @@ function! VimuxRunSelection()
   call VimuxRunCommand(command)
 endfunction
 
+" Vimux operator function
+function! VimuxOperator(type)
+  let sel_save = &selection
+  let &selection = "inclusive"
+  let reg_save = @@
+  
+  if a:type == 'line'
+    '[,']yank
+  elseif a:type == 'char'
+    '`[,`]yank
+  else
+    return
+  endif
+  
+  let command = @@
+  let &selection = sel_save
+  let @@ = reg_save
+  
+  call VimuxRunCommand(command)
+endfunction
+
 " =============================================================================
 " 7. VIMUX KEY MAPPINGS
 " =============================================================================
 " Single line execution
-nnoremap <Leader>vl :call VimuxRunCurrentLine()<CR>
+nnoremap <Leader><Leader>vl :call VimuxRunCurrentLine()<CR>
 
-" Multi-line execution (current + neighbors) - accepts count prefix
-nnoremap <Leader>vj :<C-u>call VimuxRunLinesBelow(v:count1 == 1 ? 3 : v:count1)<CR>
-nnoremap <Leader>vk :<C-u>call VimuxRunLinesAbove(v:count1 == 1 ? 3 : v:count1)<CR>
-nnoremap <Leader>va :<C-u>call VimuxRunLinesAround(v:count1 == 1 ? 3 : v:count1)<CR>
+" Operator-pending mode for flexible selection
+nnoremap <Leader><Leader>v :set operatorfunc=VimuxOperator<CR>g@
+
+" Direct multi-line execution (traditional way)
+nnoremap <Leader><Leader>vj :<C-u>call VimuxRunLinesBelow(v:count1 == 1 ? 3 : v:count1)<CR>
+nnoremap <Leader><Leader>vk :<C-u>call VimuxRunLinesAbove(v:count1 == 1 ? 3 : v:count1)<CR>
+nnoremap <Leader><Leader>va :<C-u>call VimuxRunLinesAround(v:count1 == 1 ? 3 : v:count1)<CR>
 
 " Paragraph execution (blank line separated)
-nnoremap <Leader>vp vip:call VimuxRunSelection()<CR>
+nnoremap <Leader><Leader>vp vip:call VimuxRunSelection()<CR>
 
 " Visual selection execution
-vnoremap <Leader>vv :call VimuxRunSelection()<CR>
+vnoremap <Leader><Leader>vv :call VimuxRunSelection()<CR>
 
 " Quick Vimux commands
-nnoremap <Leader>vr :VimuxRunLastCommand<CR>
-nnoremap <Leader>vc :VimuxCloseRunner<CR>
-nnoremap <Leader>vi :VimuxInspectRunner<CR>
+nnoremap <Leader><Leader>vr :VimuxRunLastCommand<CR>
+nnoremap <Leader><Leader>vc :VimuxCloseRunner<CR>
+nnoremap <Leader><Leader>vi :VimuxInspectRunner<CR>
 "
